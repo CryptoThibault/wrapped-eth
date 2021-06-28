@@ -3,7 +3,7 @@ const { ethers } = require('hardhat');
 
 describe('WETH', async function () {
   let WETH, weth, dev, alice, bob;
-  const VALUE = ethers.utils.parseEther('0.0000001');
+  const VALUE = ethers.utils.parseEther('1');
   const ADDRESS_ZERO = ethers.constants.AddressZero;
   beforeEach(async function () {
     [dev, alice, bob] = await ethers.getSigners();
@@ -17,7 +17,7 @@ describe('WETH', async function () {
       WRAP = await weth.connect(alice).wrap({ value: VALUE });
     });
     it('should change ethers balances', async function () {
-      expect(WRAP).changeEtherBalances([alice, weth], [-VALUE, VALUE]);
+      expect(WRAP).changeEtherBalances([alice, weth], [VALUE.mul(-1), VALUE]);
     });
     it('should mint wETH to sender', async function () {
       expect(await weth.balanceOf(alice.address)).to.equal(VALUE);
@@ -31,7 +31,7 @@ describe('WETH', async function () {
       UNWRAP = await weth.connect(alice).unwrap(VALUE);
     });
     it('should change ethers balances', async function () {
-      expect(UNWRAP).changeEtherBalances([weth, alice], [-VALUE, VALUE]);
+      expect(UNWRAP).changeEtherBalances([weth, alice], [VALUE.mul(-1), VALUE]);
     });
     it('should burn wETH from sender', async function () {
       expect(await weth.balanceOf(alice.address)).to.equal(0);
